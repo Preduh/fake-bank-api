@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+  app:
+    container_name: fake-bank-api
+    restart: on-failure
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      POSTGRES_DB: fake-bank
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - fake-bank
+
+  postgres:
+    image: postgres:15.3-alpine3.18
+    container_name: fake-bank-db
+    restart: always
+    environment:
+      POSTGRES_DB: fake-bank
+      POSTGRES_USER: docker
+      POSTGRES_PASSWORD: docker
+    ports:
+      - '5432:5432'
+    volumes:
+      - postgres:/data/db
+    networks:
+      - fake-bank
+
+volumes:
+  postgres:
+
+networks:
+  fake-bank:
